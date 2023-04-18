@@ -27,33 +27,28 @@ public class PublicationLibrary {
 	    return conn;
     }
 
-    public boolean addPublication(String identifier, Map<String, String> publicationInformation) {
-    	try (Connection connection = getConnection()) {
-            String sql = "INSERT INTO Publication (title, page_range, volume, issue, month, year, venue_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, publicationInformation.get("title"));
-            statement.setString(2, publicationInformation.get("page_range"));
-            statement.setString(3, publicationInformation.get("volume"));
-            statement.setString(4, publicationInformation.get("issue"));
-            statement.setString(5, publicationInformation.get("month"));
-            statement.setInt(6, Integer.parseInt(publicationInformation.get("year")));
-            statement.setInt(7, Integer.parseInt(publicationInformation.get("venue_id")));
-            int rowsAffected = statement.executeUpdate();
+	public boolean addPublication(String identifier, Map<String, String> publicationInformation) {
+	    try (Connection connection = getConnection()) {
+	        String sql = "INSERT INTO Publication (id,title, page_range, volume, issue, month, year, venue_id) VALUES (?,?, ?, ?, ?, ?, ?, ?)";
+	        PreparedStatement statement = connection.prepareStatement(sql);
+	        statement.setString(1, identifier);
+	        statement.setString(2, publicationInformation.get("title"));
+	        statement.setString(3, publicationInformation.get("pageRange"));
+	        statement.setString(4, publicationInformation.get("volume"));
+	        statement.setString(5, publicationInformation.get("issue"));
+	        statement.setString(6, publicationInformation.get("month"));
+	        statement.setInt(7, Integer.parseInt(publicationInformation.get("year")));
+	        statement.setInt(8, Integer.parseInt(publicationInformation.get("venueId")));
 
-            if (rowsAffected > 0) {
-                ResultSet generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt(1);
-                    System.out.println("Inserted publication with id: " + id);
-                }
-                return true;
-            }
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	        int rowsAffected = statement.executeUpdate();
+
+	        return rowsAffected > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
     
     public boolean addAuthor(String identifier, String fullName) {
         try (Connection connection = getConnection()) {
@@ -110,8 +105,20 @@ public class PublicationLibrary {
         }
     }
 
-    public boolean addVenue(String venueName, Map<String, String> venueInformation, Set<String> researchAreas) {
-    	try (Connection connection = getConnection()) {
+    public boolean addVenue(String venueName, Map<String, String> venueInformation, HashSet<String> researchAreas) {
+        try (Connection connection = getConnection()) {
+            int publisherId = Integer.parseInt(venueInformation.getOrDefault("publisher_id", "0"));
+
+            // Check if publisher_id exists in the Publisher table
+            String checkPublisherSql = "SELECT COUNT(*) FROM Publisher WHERE id = ?";
+            PreparedStatement checkPublisherStatement = connection.prepareStatement(checkPublisherSql);
+            checkPublisherStatement.setInt(1, publisherId);
+            ResultSet resultSet = checkPublisherStatement.executeQuery();
+            if (resultSet.next() && resultSet.getInt(1) == 0) {
+                System.out.println("Publisher ID not found.");
+                return false;
+            }
+
             String sql = "INSERT INTO Venue (name, organization, area_of_research, editor, editor_contact, location, conference_year, publisher_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, venueName);
@@ -120,8 +127,8 @@ public class PublicationLibrary {
             statement.setString(4, venueInformation.get("editor"));
             statement.setString(5, venueInformation.get("editor_contact"));
             statement.setString(6, venueInformation.get("location"));
-            statement.setInt(7, Integer.parseInt(venueInformation.get("conference_year")));
-            statement.setInt(8, Integer.parseInt(venueInformation.get("publisher_id")));
+            statement.setInt(7, Integer.parseInt(venueInformation.getOrDefault("conference_year", "0")));
+            statement.setInt(8, publisherId);
 
             int rowsAffected = statement.executeUpdate();
 

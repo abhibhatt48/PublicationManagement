@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -28,9 +30,13 @@ public class Main {
                  String identifier = scanner.nextLine();
                  System.out.print("Enter author's full name: ");
                  String fullName = scanner.nextLine();
-                 library.addAuthor(identifier, fullName);
-                 System.out.println("Author added successfully.");
                  
+                 boolean success = library.addAuthor(identifier, fullName);
+                 if(success) {
+                 System.out.println("Author added successfully.");
+                 }else {
+                	 System.out.println("Failed to add author.");
+                 }
             } else if (choice == 2) {
             	System.out.print("Enter publisher's identifier: ");
                 String identifier = scanner.nextLine();
@@ -44,13 +50,18 @@ public class Main {
                 publisherInformation.put("contact_email", scanner.nextLine());
                 System.out.print("Enter publisher's location: ");
                 publisherInformation.put("location", scanner.nextLine());
-                library.addPublisher(identifier, publisherInformation);
+                
+                boolean success =library.addPublisher(identifier, publisherInformation);
+                if(success) {
                 System.out.println("Publisher added successfully.");
+                } else {
+                	System.out.println("Failed to add publisher.");                	
+                }
                 
-            } else if (choice == 3) {
-            	System.out.print("Enter venue's name: ");
+            }else if (choice == 3) {
+                System.out.print("Enter venue's name: ");
                 String venueName = scanner.nextLine();
-                
+
                 Map<String, String> venueInformation = new HashMap<>();
                 System.out.print("Enter organization: ");
                 venueInformation.put("organization", scanner.nextLine());
@@ -62,45 +73,80 @@ public class Main {
                 venueInformation.put("editor_contact", scanner.nextLine());
                 System.out.print("Enter venue's location: ");
                 venueInformation.put("location", scanner.nextLine());
-                System.out.print("Enter conference year: ");
-                int conferenceYear = scanner.nextInt();
-                scanner.nextLine(); // Clear the newline character
-                System.out.print("Enter publisher ID: ");
-                String publisherId = scanner.nextLine();
-                Set<String> researchAreas = new HashSet<>();
+
+                int conferenceYear = 0;
+                while (true) {
+                    System.out.print("Enter conference year: ");
+                    String input = scanner.nextLine();
+                    if (input.isEmpty()) {
+                        break;
+                    }
+                    try {
+                        conferenceYear = Integer.parseInt(input);
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a numeric value.");
+                    }
+                }
+                venueInformation.put("conference_year", Integer.toString(conferenceYear));
+
+                int publisherId = 0;
+                while (true) {
+                    System.out.print("Enter publisher ID: ");
+                    String input = scanner.nextLine();
+                    if (input.isEmpty()) {
+                        break;
+                    }
+                    try {
+                        publisherId = Integer.parseInt(input);
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a numeric value.");
+                    }
+                }
+                venueInformation.put("publisher_id", Integer.toString(publisherId));
+
+                HashSet<String> researchAreas = new HashSet<>();
                 while (true) {
                     System.out.print("Enter research area (or leave blank to finish): ");
                     String researchArea = scanner.nextLine();
-                    if (researchArea.isBlank()) {
+                    if (researchArea.isEmpty()) {
                         break;
                     }
                     researchAreas.add(researchArea);
                 }
-                library.addVenue(venueName, venueInformation, researchAreas);
-                System.out.println("Venue added successfully.");
-                
-            } else if (choice == 4) {
-            	System.out.print("Enter publication's identifier: ");
+                boolean success = library.addVenue(venueName, venueInformation, researchAreas);
+                if (success) {
+                    System.out.println("Venue added successfully.");
+                } else {
+                    System.out.println("Failed to add venue.");
+                }                            
+            }else if (choice == 4) {
+                System.out.print("Enter publication's identifier: ");
                 String identifier = scanner.nextLine();
                 Map<String, String> publicationInformation = new HashMap<>();
-                
+
                 System.out.print("Enter publication's title: ");
                 publicationInformation.put("title", scanner.nextLine());
                 System.out.print("Enter page range: ");
                 publicationInformation.put("pageRange", scanner.nextLine());
                 System.out.print("Enter volume: ");
-                publicationInformation.put("volume", scanner.nextLine());              
+                publicationInformation.put("volume", scanner.nextLine());
                 System.out.print("Enter issue: ");
-                publicationInformation.put("issue", scanner.nextLine());                  
-                System.out.print("Enter publication month: ");               
-                publicationInformation.put("month", scanner.nextLine());  
-                System.out.print("Enter publication year: ");               
-                publicationInformation.put("year", scanner.nextLine());  
+                publicationInformation.put("issue", scanner.nextLine());
+                System.out.print("Enter publication month: ");
+                publicationInformation.put("month", scanner.nextLine());
+                System.out.print("Enter publication year: ");
+                publicationInformation.put("year", scanner.nextLine());
                 System.out.print("Enter venue ID: ");
-                publicationInformation.put("venueId", scanner.nextLine());                 
-                
-                library.addPublisher(identifier, publicationInformation );
-                System.out.println("Publication added successfully.");
+                publicationInformation.put("venueId", scanner.nextLine());
+
+                boolean success = library.addPublication(identifier, publicationInformation);
+                if (success) {
+                    System.out.println("Publication added successfully.");
+                } else {
+                    System.out.println("Failed to add publication.");
+                }
             } else if (choice == 5) {
                 System.out.println("Exiting...");
                 break;
