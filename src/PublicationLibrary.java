@@ -29,19 +29,26 @@ public class PublicationLibrary {
 
     public boolean addPublication(String identifier, Map<String, String> publicationInformation) {
     	try (Connection connection = getConnection()) {
-            String sql = "INSERT INTO Publication (id, title, page_range, volume, issue, month, year, venue_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, identifier);
-            statement.setString(2, publicationInformation.get("title"));
-            statement.setString(3, publicationInformation.get("page_range"));
-            statement.setString(4, publicationInformation.get("volume"));
-            statement.setString(5, publicationInformation.get("issue"));
-            statement.setString(6, publicationInformation.get("month"));
-            statement.setInt(7, Integer.parseInt(publicationInformation.get("year")));
-            statement.setInt(8, Integer.parseInt(publicationInformation.get("venue_id")));
+            String sql = "INSERT INTO Publication (title, page_range, volume, issue, month, year, venue_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, publicationInformation.get("title"));
+            statement.setString(2, publicationInformation.get("page_range"));
+            statement.setString(3, publicationInformation.get("volume"));
+            statement.setString(4, publicationInformation.get("issue"));
+            statement.setString(5, publicationInformation.get("month"));
+            statement.setInt(6, Integer.parseInt(publicationInformation.get("year")));
+            statement.setInt(7, Integer.parseInt(publicationInformation.get("venue_id")));
             int rowsAffected = statement.executeUpdate();
 
-            return rowsAffected > 0;
+            if (rowsAffected > 0) {
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    System.out.println("Inserted publication with id: " + id);
+                }
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
