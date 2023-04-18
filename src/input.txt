@@ -1,0 +1,6 @@
+This is a sample document with citations.
+
+According to the research conducted by \cite{Doe_2022}, the findings were groundbreaking. However, \cite{Smith_2023} provided some counterarguments to the initial findings. In a related study, \cite{Johnson_2020} also discovered some interesting insights.
+
+More recent publications, such as \cite{Brown_2021} and \cite{Green_2023}, further contribute to the discussion by presenting new perspectives and additional evidence.
+
