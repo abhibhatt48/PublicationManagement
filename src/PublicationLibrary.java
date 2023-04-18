@@ -29,7 +29,7 @@ public class PublicationLibrary {
 
 	public boolean addPublication(String identifier, Map<String, String> publicationInformation) {
 	    try (Connection connection = getConnection()) {
-	        String sql = "INSERT INTO Publication (id,title, page_range, volume, issue, month, year, venue_id) VALUES (?,?, ?, ?, ?, ?, ?, ?)";
+	        String sql = "INSERT INTO Publication (id,title, page_range, volume, issue, month, year, venue_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	        PreparedStatement statement = connection.prepareStatement(sql);
 	        statement.setString(1, identifier);
 	        statement.setString(2, publicationInformation.get("title"));
@@ -48,7 +48,6 @@ public class PublicationLibrary {
 	        return false;
 	    }
 	}
-
     
     public boolean addAuthor(String identifier, String fullName) {
         try (Connection connection = getConnection()) {
@@ -65,12 +64,12 @@ public class PublicationLibrary {
         }
     }
     
-    public boolean addPublicationAuthor(String publicationId, String authorId) {
+    public boolean addPublicationAuthor(int publicationId, int authorId) {
         try (Connection connection = getConnection()) {
             String sql = "INSERT INTO Publication_Author (publication_id, author_id) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, publicationId);
-            statement.setString(2, authorId);
+            statement.setInt(1, publicationId);
+            statement.setInt(2, authorId);
             int rowsAffected = statement.executeUpdate();
 
             return rowsAffected > 0;

@@ -19,7 +19,11 @@ public class Main {
             System.out.println("2. Add a publisher");
             System.out.println("3. Add a venue");
             System.out.println("4. Add a publication");
-            System.out.println("5. Exit");
+            System.out.println("5. Add a research area");
+            System.out.println("6. Add an author to a publication");
+            System.out.println("7. Add a refrences to a publication"); 
+            System.out.println("8. Display all publications");             
+            System.out.println("9. Exit");
             System.out.print("Enter the number of your choice: ");
 
             int choice = scanner.nextInt();
@@ -147,7 +151,79 @@ public class Main {
                 } else {
                     System.out.println("Failed to add publication.");
                 }
-            } else if (choice == 5) {
+            }else if (choice == 5) {
+                System.out.print("Enter research area's name: ");
+                String researchAreaName = scanner.nextLine();
+
+                Set<String> parentAreaIds = new HashSet<>();
+
+                while (true) {
+                    System.out.print("Enter parent area ID (or leave blank for no parent): ");
+                    String parentAreaId = scanner.nextLine();
+                    if (parentAreaId.isEmpty()) {
+                        break;
+                    }
+                    parentAreaIds.add(parentAreaId);
+                }
+
+                boolean success = library.addArea(researchAreaName, parentAreaIds);
+                if (success) {
+                    System.out.println("Research area added successfully.");
+                } else {
+                    System.out.println("Failed to add research area.");
+                }
+            }else if (choice == 6) {
+                System.out.print("Enter publication ID: ");
+                int publicationId = scanner.nextInt();
+                System.out.print("Enter author ID: ");
+                int authorId = scanner.nextInt();
+                scanner.nextLine(); // Clear newline character
+
+                boolean success = library.addPublicationAuthor(publicationId, authorId);
+                if (success) {
+                    System.out.println("Author added to publication successfully.");
+                } else {
+                    System.out.println("Failed to add author to publication.");
+                }
+            }else if (choice == 7) {
+                System.out.print("Enter publication identifier: ");
+                String publicationId = scanner.nextLine();
+
+                Set<String> references = new HashSet<>();
+                while (true) {
+                    System.out.print("Enter reference (or leave blank to finish): ");
+                    String reference = scanner.nextLine();
+                    if (reference.isEmpty()) {
+                        break;
+                    }
+                    references.add(reference);
+                }
+
+                boolean success = library.addReferences(publicationId, references);
+                if (success) {
+                    System.out.println("References added successfully.");
+                } else {
+                    System.out.println("Failed to add references.");
+                }
+            }else if (choice == 8) {
+            	System.out.print("Enter publication ID: ");
+            	String publicationId = scanner.nextLine();
+            	
+            	Map<String, String> publication = library.getPublications(publicationId);
+            	if (publication.isEmpty()) {
+            	    System.out.println("Publication not found.");
+            	} else {
+            	    System.out.println("Publication found: ");
+            	    System.out.println("ID: " + publication.get("id"));
+            	    System.out.println("Title: " + publication.get("title"));
+            	    System.out.println("Page Range: " + publication.get("page_range"));
+            	    System.out.println("Volume: " + publication.get("volume"));
+            	    System.out.println("Issue: " + publication.get("issue"));
+            	    System.out.println("Month: " + publication.get("month"));
+            	    System.out.println("Year: " + publication.get("year"));
+            	    System.out.println("Venue ID: " + publication.get("venue_id"));
+            	}                
+            }else if (choice == 9) {
                 System.out.println("Exiting...");
                 break;
             } else {
