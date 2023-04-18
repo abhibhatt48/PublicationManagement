@@ -293,8 +293,58 @@ public class PublicationLibrary {
         return visitedAuthors;
     }
 
-    public Set<String> authorResearchAreas(String author, int threshold) {
-		return null;
-        // Return author research areas
+    public Set<String> authorResearchAreas(String authorName, int threshold) throws SQLException {
+        Set<String> result = new HashSet<>();
+
+        // Query the database for the author ID
+        PreparedStatement stmt = connect.prepareStatement("SELECT id FROM Author WHERE full_name = ?");
+        stmt.setString(1, authorName);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            int authorId = rs.getInt("id");
+
+            // Query the database for the research areas and publication counts for the author
+            stmt = connect.prepareStatement(
+                "SELECT RA.name, COUNT(*) AS count " +
+                "FROM Publication_Author PA " +
+                "JOIN Publication_Research_Area PRA ON PRA.publication_id = PA.publication_id " +
+                "JOIN Research_Area RA ON RA.id = PRA.research_area_id " +
+                "WHERE PA.author_id = ? " +
+                "GROUP BY RA.id");
+
+            stmt.setInt(1, authorId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String areaName = rs.getString("name");
+                int count = rs.getInt("count");
+
+                if (count >= threshold) {
+                    result.add(areaName);
+                    // Add all parent areas of the current area recursively
+                    addParentAreas(result, areaName);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void addParentAreas(Set<String> areas, String areaName) throws SQLException {
+        PreparedStatement stmt = connect.prepareStatement(
+            "SELECT RA.name " +
+            "FROM Research_Area RA " +
+            "JOIN Research_Area Parent ON RA.parent_area_id = Parent.id " +
+            "WHERE RA.name = ?");
+
+        stmt.setString(1, areaName);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            String parentName = rs.getString("name");
+            areas.add(parentName);
+            addParentAreas(areas, parentName);
+        }
     }
 }
