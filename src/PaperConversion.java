@@ -65,6 +65,14 @@ public class PaperConversion {
         return abbreviatedAuthors + ", \"" + title + ",\" " + venue + ", vol. " + volume + ", no. " + issue + ", pp. " + pageRange + ", " + year + ".";
     }
 
+	/*
+	 * public String replaceCitations(String text, Map<String, Integer> citationMap)
+	 * { for (Map.Entry<String, Integer> entry : citationMap.entrySet()) { String
+	 * citeKey = entry.getKey(); int refNumber = entry.getValue(); text =
+	 * text.replaceAll("\\\\cite\\{" + citeKey + "\\}", "[" + refNumber + "]"); }
+	 * return text; }
+	 */
+
     public String replaceCitations(String text, Map<String, Integer> citationMap) {
         for (Map.Entry<String, Integer> entry : citationMap.entrySet()) {
             String citeKey = entry.getKey();
@@ -86,18 +94,25 @@ public class PaperConversion {
         }
 
         Map<String, Integer> citationMap = new HashMap<>();
+        List<String> ieeeReferences = new ArrayList<>();
         int index = 1;
         for (String key : citationKeys) {
             String ieeeReference = getIEEEReference(key);
             if (ieeeReference != null) {
                 citationMap.put(key, index++);
-                System.out.println("[" + (index - 1) + "] " + ieeeReference);
+                ieeeReferences.add("[" + (index - 1) + "] " + ieeeReference);
             }
         }
 
         String replacedText = replaceCitations(text, citationMap);
 
-        Files.writeString(Path.of(outputFile), replacedText);
+        StringBuilder sb = new StringBuilder(replacedText);
+        sb.append("\n\n");
+        for (String ref : ieeeReferences) {
+            sb.append(ref).append("\n");
+        }
+
+        Files.writeString(Path.of(outputFile), sb.toString());       
     }
 
     public static void main(String[] args) {
