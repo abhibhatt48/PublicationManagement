@@ -22,8 +22,11 @@ public class Main {
             System.out.println("5. Add a research area");
             System.out.println("6. Add an author to a publication");
             System.out.println("7. Add a refrences to a publication"); 
-            System.out.println("8. Display all publications");             
-            System.out.println("9. Exit");
+            System.out.println("8. Display all publications");
+            System.out.println("9. Display all aurther's citations");
+            System.out.println("10. Seminal paper refrences");
+            System.out.println("11. Research collaborators");
+            System.out.println("12. Exit");
             System.out.print("Enter the number of your choice: ");
 
             int choice = scanner.nextInt();
@@ -224,6 +227,67 @@ public class Main {
             	    System.out.println("Venue ID: " + publication.get("venue_id"));
             	}                
             }else if (choice == 9) {
+                System.out.print("Enter author's name: ");
+                String authorName = scanner.nextLine();
+                int citationCount = library.authorCitations(authorName);
+                System.out.println(authorName + " has " + citationCount + " citations.");
+            }else if (choice == 10) {
+                System.out.print("Enter area of research: ");
+                String area = scanner.nextLine();
+
+                int paperCitation = 0;
+                while (true) {
+                    System.out.print("Enter minimum number of citations for seminal papers: ");
+                    String input = scanner.nextLine();
+                    if (input.isEmpty()) {
+                        break;
+                    }
+                    try {
+                        paperCitation = Integer.parseInt(input);
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a numeric value.");
+                    }
+                }
+
+                int otherCitations = 0;
+                while (true) {
+                    System.out.print("Enter minimum number of other citations: ");
+                    String input = scanner.nextLine();
+                    if (input.isEmpty()) {
+                        break;
+                    }
+                    try {
+                        otherCitations = Integer.parseInt(input);
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a numeric value.");
+                    }
+                }
+
+                Set<String> seminalPapers = library.seminalPapers(area, paperCitation, otherCitations);
+
+                if (seminalPapers != null && seminalPapers.size() > 0) {
+                    System.out.println("Seminal papers for " + area + ":");
+                    for (String paperId : seminalPapers) {
+                        System.out.println(paperId);
+                    }
+                } else {
+                    System.out.println("No seminal papers found for " + area + ".");
+                }
+            }else if (choice == 11) {
+                System.out.print("Enter author's name: ");
+                String author = scanner.nextLine();
+                System.out.print("Enter distance: ");
+                int distance = scanner.nextInt();
+                scanner.nextLine(); // Clear newline character
+
+                Set<String> collaborators = library.collaborators(author, distance);
+                System.out.println("Collaborators:");
+                for (String collaborator : collaborators) {
+                    System.out.println(collaborator);
+                }
+            }else if (choice == 12) {
                 System.out.println("Exiting...");
                 break;
             } else {
