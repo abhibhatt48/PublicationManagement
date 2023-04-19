@@ -116,8 +116,17 @@ public class PaperConversion {
     }
 
     public static void main(String[] args) {
-        String inputFile = "C:\\Users\\HP\\Documents\\GitHub\\Final_project\\abhishekb\\src\\input.txt";
-        String outputFile = "output_file.txt";
+        Scanner scanner = new Scanner(System.in);
+
+        String fixedPath = "C:\\Users\\HP\\Documents\\GitHub\\Final_project\\abhishekb\\src\\";
+
+        System.out.print("Enter input file name: ");
+        String inputFileName = scanner.nextLine();
+        String inputFile = fixedPath + inputFileName;
+
+        System.out.print("Enter output file name: ");
+        String outputFileName = scanner.nextLine();
+        String outputFile = fixedPath + outputFileName;
 
         try {
             PaperConversion pc = new PaperConversion("jdbc:mysql://db.cs.dal.ca:3306?serverTimezone=UTC&useSSL=false", "abhishekb", "B00933993");
