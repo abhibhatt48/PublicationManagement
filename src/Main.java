@@ -45,9 +45,15 @@ public class Main {
                     System.out.println("Invalid input. Identifier must be an integer.");
                     return;
                 }
-                 System.out.print("Enter author's full name: ");
-                 String fullName = scanner.nextLine();
-                 
+                String fullName;
+                while (true) {
+                    System.out.print("Enter author's full name: ");
+                    fullName = scanner.nextLine();
+                    if (fullName != null && !fullName.trim().isEmpty()) {
+                        break;
+                    }
+                    System.out.println("Invalid input. Name can't be null or empty.");
+                }
                  // Add the author to the library and print a success message if successful
                  boolean success = library.addAuthor(identifierString, fullName);
                  if(success) {
@@ -193,7 +199,17 @@ public class Main {
                 System.out.print("Enter publication year: ");
                 publicationInformation.put("year", scanner.nextLine());
                 System.out.print("Enter venue ID: ");
-                publicationInformation.put("venueId", scanner.nextLine());
+                int venueId = 0;
+                while (true) {
+                    String venueIdString = scanner.nextLine();
+                    try {
+                        venueId = Integer.parseInt(venueIdString);
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Venue ID must be an integer.");
+                    }
+                }
+                publicationInformation.put("venueId", Integer.toString(venueId));
 
                 // Add the publication to the library and print a success message if successful
                 boolean success = library.addPublication(identifierString, publicationInformation);
