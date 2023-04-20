@@ -36,21 +36,35 @@ public class Main {
 
             // Check the user's choice and execute the corresponding action
             if (choice == 1) {
-            	 System.out.print("Enter author's identifier: ");
-                 String identifier = scanner.nextLine();
+            	System.out.print("Enter author's identifier: ");
+                String identifierString = scanner.nextLine();
+                int identifier = 0;
+                try {
+                    identifier = Integer.parseInt(identifierString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Identifier must be an integer.");
+                    return;
+                }
                  System.out.print("Enter author's full name: ");
                  String fullName = scanner.nextLine();
                  
                  // Add the author to the library and print a success message if successful
-                 boolean success = library.addAuthor(identifier, fullName);
+                 boolean success = library.addAuthor(identifierString, fullName);
                  if(success) {
                  System.out.println("Author added successfully.");
                  }else {
                 	 System.out.println("Failed to add author.");
                  }
             } else if (choice == 2) {
-            	System.out.print("Enter publisher's identifier: ");
-                String identifier = scanner.nextLine();
+            	System.out.print("Enter pulisher's identifier: ");
+                String identifierString = scanner.nextLine();
+                int identifier = 0;
+                try {
+                    identifier = Integer.parseInt(identifierString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Identifier must be an integer.");
+                    return;
+                }
                 Map<String, String> publisherInformation = new HashMap<>();
                 
                 System.out.print("Enter publisher's name: ");
@@ -73,7 +87,7 @@ public class Main {
                 publisherInformation.put("location", scanner.nextLine());
                 
                 // Add the publisher to the library and print a success message if successful
-                boolean success =library.addPublisher(identifier, publisherInformation);
+                boolean success =library.addPublisher(identifierString, publisherInformation);
                 if(success) {
                 System.out.println("Publisher added successfully.");
                 } else {
@@ -155,8 +169,15 @@ public class Main {
                     System.out.println("Failed to add venue.");
                 }                            
             }else if (choice == 4) {
-                System.out.print("Enter publication's identifier: ");
-                String identifier = scanner.nextLine();
+                System.out.print("Enter publication's identifier: ");               
+                String identifierString = scanner.nextLine();
+                int identifier = 0;
+                try {
+                    identifier = Integer.parseInt(identifierString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Identifier must be an integer.");
+                    return;
+                }
                 Map<String, String> publicationInformation = new HashMap<>();
 
                 System.out.print("Enter publication's title: ");
@@ -175,7 +196,7 @@ public class Main {
                 publicationInformation.put("venueId", scanner.nextLine());
 
                 // Add the publication to the library and print a success message if successful
-                boolean success = library.addPublication(identifier, publicationInformation);
+                boolean success = library.addPublication(identifierString, publicationInformation);
                 if (success) {
                     System.out.println("Publication added successfully.");
                 } else {
@@ -219,8 +240,14 @@ public class Main {
                 }
             }else if (choice == 7) {
                 System.out.print("Enter publication identifier: ");
-                String publicationId = scanner.nextLine();
-
+                String publicationId  = scanner.nextLine();
+                int identifier = 0;
+                try {
+                    identifier = Integer.parseInt(publicationId);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Identifier must be an integer.");
+                    return;
+                }
                 Set<String> references = new HashSet<>();
                 while (true) {
                     System.out.print("Enter reference (e.x: lastName_2023): ");
@@ -240,8 +267,15 @@ public class Main {
                 }
             }else if (choice == 8) {
             	//  Enter an publication id to get a specific data.
-            	System.out.print("Enter publication ID: ");
-            	String publicationId = scanner.nextLine();
+            	System.out.print("Enter publication ID: ");        	
+            	String publicationId  = scanner.nextLine();
+                int identifier = 0;
+                try {
+                    identifier = Integer.parseInt(publicationId);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Identifier must be an integer.");
+                    return;
+                }
             	
             	Map<String, String> publication = library.getPublications(publicationId);
             	if (publication.isEmpty()) {
