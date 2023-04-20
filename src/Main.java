@@ -1,18 +1,19 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
         PublicationLibrary library = new PublicationLibrary();
+        // Create a new Scanner object to read user input
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to the Publication Library!");
 
+        // Use a while loop to display the main menu until the user chooses to exit
         while (true) {
             System.out.println("\nPlease choose an option:");
             System.out.println("1. Add an author");
@@ -29,15 +30,18 @@ public class Main {
             System.out.println("12. Exit");
             System.out.print("Enter the number of your choice: ");
 
+            // Read the user's choice from the input
             int choice = scanner.nextInt();
             scanner.nextLine(); // Clear the newline character
 
+            // Check the user's choice and execute the corresponding action
             if (choice == 1) {
             	 System.out.print("Enter author's identifier: ");
                  String identifier = scanner.nextLine();
                  System.out.print("Enter author's full name: ");
                  String fullName = scanner.nextLine();
                  
+                 // Add the author to the library and print a success message if successful
                  boolean success = library.addAuthor(identifier, fullName);
                  if(success) {
                  System.out.println("Author added successfully.");
@@ -53,11 +57,22 @@ public class Main {
                 publisherInformation.put("name", scanner.nextLine());
                 System.out.print("Enter contact name: ");
                 publisherInformation.put("contact_name", scanner.nextLine());
-                System.out.print("Enter contact email: ");
-                publisherInformation.put("contact_email", scanner.nextLine());
+                String emailPattern = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+                while (true) {
+                    System.out.print("Enter contact email: ");
+                    String contactEmail = scanner.nextLine();
+                    if (Pattern.matches(emailPattern, contactEmail)) {
+                        publisherInformation.put("contact_email", contactEmail);
+                        break;
+                    } else {
+                        System.out.println("Invalid email. Please enter a valid email address.");
+                    }
+                }
+
                 System.out.print("Enter publisher's location: ");
                 publisherInformation.put("location", scanner.nextLine());
                 
+                // Add the publisher to the library and print a success message if successful
                 boolean success =library.addPublisher(identifier, publisherInformation);
                 if(success) {
                 System.out.println("Publisher added successfully.");
@@ -76,8 +91,17 @@ public class Main {
                 venueInformation.put("area_of_research", scanner.nextLine());
                 System.out.print("Enter editor's name: ");
                 venueInformation.put("editor", scanner.nextLine());
-                System.out.print("Enter editor's contact: ");
-                venueInformation.put("editor_contact", scanner.nextLine());
+                String emailPattern = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+                while (true) {
+                    System.out.print("Enter editor's email: ");
+                    String editorContact = scanner.nextLine();
+                    if (Pattern.matches(emailPattern, editorContact)) {
+                        venueInformation.put("editor_contact", editorContact);
+                        break;
+                    } else {
+                        System.out.println("Invalid email. Please enter a valid email address.");
+                    }
+                }
                 System.out.print("Enter venue's location: ");
                 venueInformation.put("location", scanner.nextLine());
 
@@ -122,6 +146,8 @@ public class Main {
                     }
                     researchAreas.add(researchArea);
                 }
+                
+                // Add the Venue to the library and print a success message if successful
                 boolean success = library.addVenue(venueName, venueInformation, researchAreas);
                 if (success) {
                     System.out.println("Venue added successfully.");
@@ -148,6 +174,7 @@ public class Main {
                 System.out.print("Enter venue ID: ");
                 publicationInformation.put("venueId", scanner.nextLine());
 
+                // Add the publication to the library and print a success message if successful
                 boolean success = library.addPublication(identifier, publicationInformation);
                 if (success) {
                     System.out.println("Publication added successfully.");
@@ -169,6 +196,7 @@ public class Main {
                     parentAreaIds.add(parentAreaId);
                 }
 
+                // Add the research area and relation with parent area to the library and print a success message if successful
                 boolean success = library.addArea(researchAreaName, parentAreaIds);
                 if (success) {
                     System.out.println("Research area added successfully.");
@@ -182,6 +210,7 @@ public class Main {
                 int authorId = scanner.nextInt();
                 scanner.nextLine(); // Clear newline character
 
+                // Add the relation between publication and author to the library and print a success message if successful
                 boolean success = library.addPublicationAuthor(publicationId, authorId);
                 if (success) {
                     System.out.println("Author added to publication successfully.");
@@ -194,7 +223,7 @@ public class Main {
 
                 Set<String> references = new HashSet<>();
                 while (true) {
-                    System.out.print("Enter reference (or leave blank to finish): ");
+                    System.out.print("Enter reference (e.x: lastName_2023): ");
                     String reference = scanner.nextLine();
                     if (reference.isEmpty()) {
                         break;
@@ -202,6 +231,7 @@ public class Main {
                     references.add(reference);
                 }
 
+                // Add the reference to the library and print a success message if successful
                 boolean success = library.addReferences(publicationId, references);
                 if (success) {
                     System.out.println("References added successfully.");
@@ -209,6 +239,7 @@ public class Main {
                     System.out.println("Failed to add references.");
                 }
             }else if (choice == 8) {
+            	//  Enter an publication id to get a specific data.
             	System.out.print("Enter publication ID: ");
             	String publicationId = scanner.nextLine();
             	

@@ -16,7 +16,7 @@ public class PaperConversion {
 	    stmt.execute("Use abhishekb");
     }
 
-    // Generates a string of abbreviated author names in the format "A. B. Lastname, C. D. Lastname, ..."
+    // Generates a string of abbreviated author names in the format "A. B. Last name, C. D. Last name, ..."
     public String getAbbreviatedAuthors(List<String> authors) {
         StringBuilder abbreviatedAuthors = new StringBuilder();
         
